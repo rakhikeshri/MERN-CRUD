@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNotes, setCreateForm, setIsEdit, setEditNoteId } from '../Redux/reducers/notesSlice';
+import { api } from './constants.js'
 
 const useNoteActions = () => {
   const dispatch = useDispatch();
@@ -12,8 +13,13 @@ const useNoteActions = () => {
   }, []);
 
   const fetchNotes = async () => {
-    const response = await axios.get('http://localhost:3000/notes');
-    dispatch(setNotes(response.data.notes));
+    try {
+      const response = await axios.get(`${api}/notes`);
+      dispatch(setNotes(response.data.notes));
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   const updateCreateFromField = (e) => {
@@ -27,37 +33,51 @@ const useNoteActions = () => {
   const createOrUpdateNote = async (e) => {
     e.preventDefault();
 
-    if (isEdit === false) {
-      // create the note
-      const res = await axios.post('http://localhost:3000/notes', createForm);
-      // update state
-      dispatch(setNotes([
-        ...notes, res.data.note
-      ]));
-    } else {
-      // edit the note
-      const res = await axios.put(`http://localhost:3000/notes/${editNoteId}`, createForm);
+    try {
+      if (isEdit === false) {
+        // create the note
+        if(createForm.title !== '' && createForm.body !== ''){
+          const res = await axios.post(`${api}/notes`, createForm);
+          // update state
+          dispatch(setNotes([
+            ...notes, res.data.note
+          ]));
+        }else{
+          alert('Please enter the note.')
+        }
+      } else {
+        // edit the note
+        const res = await axios.put(`${api}/notes/${editNoteId}`, createForm);
 
-      // update the state
-      const updatedNotes = notes.map(note => note._id === editNoteId ? res.data.note : note);
-      dispatch(setNotes(updatedNotes));
+        // update the state
+        const updatedNotes = notes.map(note => note._id === editNoteId ? res.data.note : note);
+        dispatch(setNotes(updatedNotes));
 
-      // reset edit mode
-      dispatch(setIsEdit(false));
-      dispatch(setEditNoteId(null));
+        // reset edit mode
+        dispatch(setIsEdit(false));
+        dispatch(setEditNoteId(null));
+      }
+
+      // clear form state 
+      dispatch(setCreateForm({ title: '', body: '' }));
+    } catch (error) {
+      console.error('Error creating/updating note:', error);
+      // Handle error (e.g., show error message to user)
     }
-
-    // clear form state 
-    dispatch(setCreateForm({ title: '', body: '' }));
   };
 
   const deleteNote = async (id) => {
-    // delete the note 
-    const res = await axios.delete(`http://localhost:3000/notes/${id}`);
+    try {
+      // delete the note 
+      await axios.delete(`${api}/notes/${id}`);
 
-    // update state
-    const filteredNotes = notes.filter(note => note._id !== id);
-    dispatch(setNotes(filteredNotes));
+      // update state
+      const filteredNotes = notes.filter(note => note._id !== id);
+      dispatch(setNotes(filteredNotes));
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      // Handle error (e.g., show error message to user)
+    }
   };
 
   const editNote = (id) => {

@@ -8,6 +8,7 @@ const initialState = {
     title: '',
     body: ''
   },
+  darkMode: false
 };
 
 const notesSlice = createSlice({
@@ -26,8 +27,11 @@ const notesSlice = createSlice({
     setEditNoteId: (state, action) => {
       state.editNoteId = action.payload;
     },
+    toggleDarkMode: (state, action) => {
+      state.darkMode = !state.darkMode;
+    }
   },
 });
 
-export const { setNotes, setCreateForm, setIsEdit, setEditNoteId } = notesSlice.actions;
+export const { setNotes, setCreateForm, setIsEdit, setEditNoteId, toggleDarkMode } = notesSlice.actions;
 export default notesSlice.reducer;

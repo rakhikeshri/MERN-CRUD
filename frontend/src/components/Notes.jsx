@@ -2,7 +2,6 @@ import React from 'react'
 import { useSelector } from 'react-redux';
 import useNoteActions from '../utils/useNoteActions';
 import { Link } from "react-router-dom";
-
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 

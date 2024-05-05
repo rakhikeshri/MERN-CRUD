@@ -8,7 +8,8 @@ const initialState = {
     title: '',
     body: ''
   },
-  darkMode: false
+  darkMode: false,
+  searchNoteQuery: '',
 };
 
 const notesSlice = createSlice({
@@ -29,9 +30,12 @@ const notesSlice = createSlice({
     },
     toggleDarkMode: (state, action) => {
       state.darkMode = !state.darkMode;
+    },
+    setSearchNoteQuery: (state, action) => {
+      state.searchNoteQuery = action.payload;
     }
   },
 });
 
-export const { setNotes, setCreateForm, setIsEdit, setEditNoteId, toggleDarkMode } = notesSlice.actions;
+export const { setNotes, setCreateForm, setIsEdit, setEditNoteId, toggleDarkMode, setSearchNoteQuery } = notesSlice.actions;
 export default notesSlice.reducer;

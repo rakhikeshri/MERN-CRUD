@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNotes, setCreateForm, setIsEdit, setEditNoteId } from '../Redux/reducers/notesSlice';
@@ -6,16 +6,24 @@ import { api } from './constants.js'
 
 const useNoteActions = () => {
   const dispatch = useDispatch();
-  const { notes, createForm, isEdit, editNoteId } = useSelector((state) => state.notes);
+  const { notes, createForm, isEdit, editNoteId, searchNoteQuery } = useSelector((state) => state.notes);
 
   useEffect(() => {
-    fetchNotes();
-  }, []);
+
+    let timer = setTimeout(()=> {
+      fetchNotes();
+    }, 1000)
+    
+    return () => clearTimeout(timer)
+
+  }, [searchNoteQuery]);
 
   const fetchNotes = async () => {
     try {
       const response = await axios.get(`${api}/notes`);
-      dispatch(setNotes(response.data.notes));
+      const fetchedFilteredData = response?.data?.notes.filter(note => note.title.includes(searchNoteQuery))
+
+      dispatch(setNotes(fetchedFilteredData));
     } catch (error) {
       console.error('Error fetching notes:', error);
       // Handle error (e.g., show error message to user)
@@ -36,13 +44,13 @@ const useNoteActions = () => {
     try {
       if (isEdit === false) {
         // create the note
-        if(createForm.title !== '' && createForm.body !== ''){
+        if (createForm.title !== '' && createForm.body !== '') {
           const res = await axios.post(`${api}/notes`, createForm);
           // update state
           dispatch(setNotes([
             ...notes, res.data.note
           ]));
-        }else{
+        } else {
           alert('Please enter the note.')
         }
       } else {

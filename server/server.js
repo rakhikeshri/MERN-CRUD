@@ -34,11 +34,11 @@ app.post('/login', login)
 app.get('/logout', logout)
 app.get('/check-auth', requireAuth, checkAuth)
 
-app.get('/notes', fetchNotes)
-app.get('/notes/:id', fetchNote)
-app.post('/notes', createNote)
-app.put('/notes/:id', updateNote)
-app.delete('/notes/:id', deleteNote)
+app.get('/notes', requireAuth, fetchNotes)
+app.get('/notes/:id', requireAuth, fetchNote)
+app.post('/notes', requireAuth, createNote)
+app.put('/notes/:id', requireAuth, updateNote)
+app.delete('/notes/:id', requireAuth, deleteNote)
 
 //start the server
 app.listen(process.env.PORT)

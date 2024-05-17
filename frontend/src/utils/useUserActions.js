@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginData, setLoggedIn } from '../Redux/reducers/usersSlice.js';
@@ -22,13 +21,13 @@ const useUserActions = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${api}/login`, loginData, { withCredentials: true })
+      const response = await axios.post(`${api}/login`, loginData)
 
       dispatch(setLoggedIn(true))
 
-      navigate('/notes');
+      navigate('/');
 
-      console.log(response)
+      // console.log(response)
 
     } catch (error) {
       console.log('err', error)
@@ -38,9 +37,11 @@ const useUserActions = () => {
 
   const checkAuth = async () => {
     try {
-      await axios.get('/check-auth', { withCredentials: true });
-      console.log('res', response)
+      const response = await axios.get(`${api}/check-auth`);
+      console.log('response', response?.data);
       if (response.status === 200) {
+        // const { user } = response.data; // Assuming the user object is returned in the response
+        // console.log('User:', user);
         dispatch(setLoggedIn(true));
       } else {
         dispatch(setLoggedIn(false));
@@ -52,8 +53,13 @@ const useUserActions = () => {
   };
 
   const logout = async () => {
-    await axios.get('/logout', { withCredentials: true })
-    dispatch(setLoggedIn(false));
+    try {
+      await axios.get(`${api}/logout`); // Send request to logout endpoint
+      // console.log('res', res)
+      // dispatch(setLoggedIn(false)); // Dispatch action to update Redux state
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   }
 
   return {

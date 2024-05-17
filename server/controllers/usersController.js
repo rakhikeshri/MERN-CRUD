@@ -45,7 +45,6 @@ export const login = async (req, res) => {
         res.cookie("Authorization", token, {
             expires: new Date(exp),
             httpOnly: true,
-            sameSite: 'lax',
             secure: process.env.NODE_ENV === "production",
         })
 
@@ -59,17 +58,27 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        res.clearCookies("Authorization")
-        res.sendStatus(200)
+        // await res.clearCookie("Authorization"); // Clear the "Authorization" cookie
+        // res.sendStatus(200);
+
+        // res.clearCookie('Authorization').status(200).json("logout success")
+        // res.clearCookie('Authorization');
+        res.cookie("Authorization", ' ', { maxAge: 1 })
+        res.sendStatus(200);
+
     } catch (err) {
-        console.log(err)
-        res.sendStatus(400)
+        console.error('Error clearing cookie:', err);
+        res.sendStatus(500); // Internal server error
     }
 }
 
 export const checkAuth = (req, res) => {
     try {
-        res.sendStatus(200)
+        // Assuming req.user contains user information
+        const user = req.user;
+        // Sending user information in the response
+        res.status(200).json({ user });
+        //respond with the note
     } catch (err) {
         console.log(err)
         return res.sendStatus(400)

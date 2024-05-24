@@ -25,7 +25,7 @@ const useUserActions = () => {
 
       dispatch(setLoggedIn(true))
 
-      navigate('/');
+      navigate('/notes');
 
       // console.log(response)
 

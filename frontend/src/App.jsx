@@ -23,10 +23,10 @@ function App() {
       <div className='container'>
         {/* <Header /> */}
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+          <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<RequireAuth><NotesBody /></RequireAuth>}>
+          <Route path="/notes" element={<RequireAuth><NotesBody /></RequireAuth>}>
             <Route index element={<Notes />} />
             <Route path="create" element={<CreateNoteForm />} />
           </Route>

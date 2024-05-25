@@ -14,9 +14,6 @@ import RequireAuth from './components/auth/RequireAuth';
 function App() {
 
   const { darkMode } = useSelector((state) => state.notes);
-  const { loggedIn } = useSelector((state) => state.users);
-
-  useEffect(() => console.log('check',loggedIn), [loggedIn])
 
   return (
     <div className={`${darkMode ? "dark-mode" : "default-mode"}`}>
